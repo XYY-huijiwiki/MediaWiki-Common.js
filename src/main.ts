@@ -8,11 +8,14 @@
   // iterate through the result
   for (let index = 0; index < elements.length; index++) {
     const element = elements[index];
-    // get the file name
+    // get the file name, and know the file type
     let fileName = decodeURI($(element).parent().attr("href")).match(
       /:(.*)\.png/
     )![1];
     let fileExt = fileName.split(".").pop();
+    let isVideo = ["mp4"].includes(fileExt!);
+    let isAudio = ["mp3", "wav", "mid"].includes(fileExt!);
+    let isModel = ["glb"].includes(fileExt!);
     // log the file name in dev mode
     if (import.meta.env.DEV) console.log(fileName);
     // change the link to the preview page
@@ -23,15 +26,17 @@
     $(element).parent().attr("target", "_blank");
     // change the image to the poster (for video and model files)
     // change the default poster to mid poster (for audio files)
-    if (["mp4", "glb"].includes(fileExt!)) {
+    if (isVideo || isModel) {
       let posterURL = mw.huijiApi.getImageThumb(
         `${fileName}.poster.png`,
         "xyy",
         214
       );
       $(element).attr("src", posterURL);
-    } else if (["mp3", "wav", "mid"].includes(fileExt!)) {
-      let posterURL = $(element).attr("src").replace("fileicon", "fileicon-mid");
+    } else if (isAudio) {
+      let posterURL = $(element)
+        .attr("src")
+        .replace("fileicon", "fileicon-mid");
       $(element).attr("src", posterURL);
     }
     // other style changes
@@ -43,10 +48,10 @@
       .parent()
       .parent()
       .parent()
-      .attr("style", "max-width: 214px;");
+      .attr("style", `max-width: ${isVideo ? 214 : 120}px;`);
     $(element).parent().parent().parent().parent().parent().attr("style", "");
-    // add an play icon (for video and audio files)
-    if (["mp4", "mp3", "wav", "mid"].includes(fileExt!)) {
+    // add an play icon (for video files)
+    if (isVideo) {
       $(element).parent().attr("style", "position: relative;");
       $(element)
         .parent()
