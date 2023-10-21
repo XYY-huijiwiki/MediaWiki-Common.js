@@ -11,7 +11,9 @@ export default defineConfig({
       name: "MyLib",
       // the proper extensions will be added
       fileName: "my-lib",
+      formats: ["es", "umd", "iife", "cjs"],
     },
+    target: "es2015",
   },
   resolve: {
     alias: {

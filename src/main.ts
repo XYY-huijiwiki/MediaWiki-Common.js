@@ -1,4 +1,6 @@
 (async () => {
+  // wait huiji api to be ready
+  await CHP;
   // search for fileicon.png
   let elements = $(
     'ul.gallery li.gallerybox div.thumb a[href$=".png"]>img[src="/resources/assets/file-type-icons/fileicon.png"]'
@@ -20,7 +22,7 @@
     if (import.meta.env.DEV) console.log(fileName);
     // change the link to the preview page
     let link = encodeURI(
-      `//xyy.huijiwiki.com/wiki/Project:上传特殊文件#/preview/${fileName}`
+      `//xyy.huijiwiki.com/wiki/Project:迷你控制中心#/preview/${fileName}`
     );
     $(element).parent().attr("href", link);
     $(element).parent().attr("target", "_blank");

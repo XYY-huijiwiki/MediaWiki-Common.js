@@ -1,15 +1,24 @@
 {
-  "name": "s-file-display",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@xyy-huijiwiki/special-file-display",
+  "version": "0.1.4",
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/my-lib.cjs",
+  "module": "dist/my-lib.js",
+  "browser": "dist/my-lib.umd.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.23.2",
+    "@babel/preset-typescript": "^7.23.2",
+    "@rollup/plugin-babel": "^6.0.4",
     "@types/node": "^20.7.1",
+    "terser": "^5.22.0",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }

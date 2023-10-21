@@ -2,3 +2,4 @@
 
 declare const $: any;
 declare const mw: any;
+declare const CHP: Promise<any>;
