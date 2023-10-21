@@ -22,7 +22,7 @@
     if (import.meta.env.DEV) console.log(fileName);
     // change the link to the preview page
     let link = encodeURI(
-      `//xyy.huijiwiki.com/wiki/Project:迷你控制中心#/preview/${fileName}`
+      `//xyy.huijiwiki.com/wiki/File:${fileName}.png`
     );
     $(element).parent().attr("href", link);
     $(element).parent().attr("target", "_blank");

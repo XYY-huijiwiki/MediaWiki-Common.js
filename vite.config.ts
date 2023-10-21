@@ -2,6 +2,7 @@
 import { resolve } from "node:path";
 import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
+// import { getBabelOutputPlugin } from "@rollup/plugin-babel";
 
 export default defineConfig({
   build: {
@@ -11,9 +12,25 @@ export default defineConfig({
       name: "MyLib",
       // the proper extensions will be added
       fileName: "my-lib",
-      formats: ["es", "umd", "iife", "cjs"],
+      formats: ["es"],
     },
-    target: "es2015",
+    // rollupOptions: {
+    //   plugins: [
+    //     getBabelOutputPlugin({
+    //       // babelHelpers: "bundled",
+    //       presets: [
+    //         [
+    //           "@babel/preset-env",
+    //           {
+    //             targets: {
+    //               ie: "11",
+    //             },
+    //           },
+    //         ],
+    //       ],
+    //     }),
+    //   ],
+    // },
   },
   resolve: {
     alias: {
