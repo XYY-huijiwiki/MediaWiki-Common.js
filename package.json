@@ -1,7 +1,10 @@
 {
   "name": "@xyy-huijiwiki/special-file-display",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
   "files": [
     "dist"
   ],
@@ -14,6 +17,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/jquery": "^3.5.29",
     "@types/node": "^20.7.1",
     "typescript": "^5.0.2",
     "vite": "^5.2.7"

@@ -8,9 +8,9 @@ export default defineConfig({
     lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: resolve(__dirname, "src/main.ts"),
-      name: "specialFileDisplay",
+      name: "Common",
       // the proper extensions will be added
-      fileName: "special-file-display",
+      fileName: "common",
       formats: ["es", "cjs", "umd", "iife"],
     },
   },
@@ -18,5 +18,5 @@ export default defineConfig({
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
-  },
+  }
 });
