@@ -20,46 +20,25 @@
     let isModel = ["glb"].includes(fileExt!);
     // log the file name in dev mode
     if (import.meta.env.DEV) console.log(fileName);
-    // change the link to the preview page
-    let link = encodeURI(
-      `//xyy.huijiwiki.com/wiki/File:${fileName}.png`
-    );
-    $(element).parent().attr("href", link);
-    $(element).parent().attr("target", "_blank");
-    // change the image to the poster (for video and model files)
-    // change the default poster to mid poster (for audio files)
-    if (isVideo || isModel) {
-      let posterURL = mw.huijiApi.getImageThumb(
-        `${fileName}.poster.png`,
-        "xyy",
-        214
-      );
-      $(element).attr("src", posterURL);
-    } else if (isAudio) {
-      let posterURL = $(element)
-        .attr("src")
-        .replace("fileicon", "fileicon-mid");
-      $(element).attr("src", posterURL);
-    }
     // other style changes
-    $(element).attr("style", "max-height: 120px; width: auto;");
-    $(element).parent().parent().attr("style", "");
     $(element).parent().parent().parent().attr("style", "text-align: initial;");
+    // add an icons
+    let icon_name = isVideo
+      ? "videocam"
+      : isAudio
+      ? "music_note"
+      : isModel
+      ? "view_in_ar"
+      : "note";
+    $(element).parent().attr("style", "position: relative;");
     $(element)
       .parent()
-      .parent()
-      .parent()
-      .parent()
-      .attr("style", `max-width: ${isVideo ? 214 : 120}px;`);
-    $(element).parent().parent().parent().parent().parent().attr("style", "");
-    // add an play icon (for video files)
-    if (isVideo) {
-      $(element).parent().attr("style", "position: relative;");
-      $(element)
-        .parent()
-        .append(
-          '<div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;justify-content:center;align-items:center;background:rgba(0,0,0,.4);color:#fff;font-size:2em;border-radius:4px">▶</div>'
-        );
-    }
+      .append(
+        `<div style="position:absolute;top:0;left:0;width:100%;height:100%;display:flex;justify-content:center;align-items:center;border-radius:4px">
+            <span class="material-symbols-outlined" style="vertical-align: sub; font-size: 2em;">
+              ${icon_name} 
+            </span>
+          </div>`
+      );
   }
 })();

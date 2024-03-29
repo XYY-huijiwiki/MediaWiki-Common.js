@@ -1,6 +1,6 @@
 {
   "name": "@xyy-huijiwiki/special-file-display",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "type": "module",
   "files": [
     "dist"
@@ -14,12 +14,8 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.23.2",
-    "@babel/preset-typescript": "^7.23.2",
-    "@rollup/plugin-babel": "^6.0.4",
     "@types/node": "^20.7.1",
-    "terser": "^5.22.0",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^5.2.7"
   }
 }

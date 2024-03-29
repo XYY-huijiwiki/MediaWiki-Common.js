@@ -2,35 +2,17 @@
 import { resolve } from "node:path";
 import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
-// import { getBabelOutputPlugin } from "@rollup/plugin-babel";
 
 export default defineConfig({
   build: {
     lib: {
       // Could also be a dictionary or array of multiple entry points
       entry: resolve(__dirname, "src/main.ts"),
-      name: "MyLib",
+      name: "specialFileDisplay",
       // the proper extensions will be added
-      fileName: "my-lib",
-      formats: ["es"],
+      fileName: "special-file-display",
+      formats: ["es", "cjs", "umd", "iife"],
     },
-    // rollupOptions: {
-    //   plugins: [
-    //     getBabelOutputPlugin({
-    //       // babelHelpers: "bundled",
-    //       presets: [
-    //         [
-    //           "@babel/preset-env",
-    //           {
-    //             targets: {
-    //               ie: "11",
-    //             },
-    //           },
-    //         ],
-    //       ],
-    //     }),
-    //   ],
-    // },
   },
   resolve: {
     alias: {
