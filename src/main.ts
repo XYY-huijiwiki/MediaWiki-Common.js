@@ -1,10 +1,3 @@
-if (import.meta.env.PROD && dev === "MediaWiki-Common.js") {
-  // 此处代码只在生产环境且发现`dev`值为`MediaWiki-Common.js`时执行
-  // 此时停止继续加载代码即可，剩下的交给篡改猴脚本
-  throw new Error("检测到dev环境，停止加载prod代码");
-  // 虽然并不推荐throw new Error，但是这是最简单的方法
-}
-
 /* 强制所有页面内容显示为“中文（中国大陆）”，即zh-CN */
 $("#mw-content-text").attr("lang", "zh-CN");
 

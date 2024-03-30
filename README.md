@@ -28,6 +28,9 @@
 - 浏览器插件：[篡改猴](https://www.tampermonkey.net)
 - 篡改猴脚本：[Dev-Toggle-for-GitHub-Code](https://github.com/XYY-huijiwiki/Dev-Toggle-for-GitHub-Code)
 
+> [!NOTE]
+> 结束测试后记得关闭篡改猴脚本，否则默认js将无法加载。
+
 克隆仓库到本地，然后使用 `npm` 安装依赖。
 
 ```bash
