@@ -17,7 +17,7 @@
 ## 开发
 
 ### 简单版本
-直接编辑[main.ts](src/main.ts)即可。保存后自动通过[GitHub Actions](https://github.com/XYY-huijiwiki/MediaWiki-Common.js/actions)进行语法检查等操作。如果通过了检查，你的代码会自动部署到羊羊百科。
+直接在网页上编辑[main.ts](src/main.ts)即可。保存后自动通过[GitHub Actions](https://github.com/XYY-huijiwiki/MediaWiki-Common.js/actions)进行语法检查等操作。如果通过了检查，你的代码会自动部署到羊羊百科。
 
 为了防止恶意修改，你可能无法直接保存，但是可以根据提示提交一个 pull request。羊羊百科的管理员会定期处理这些 pull request。
 
@@ -43,10 +43,6 @@ npm install
 npm run dev
 ```
 
-默认情况下，开发服务器会运行在 `http://localhost:5173`。在浏览器控制台中输入以下代码，即可加载代码。
-
-```js
-import(`http://localhost:5173/src/main.ts`);
-```
+默认情况下，开发服务器会运行在 `http://localhost:5173`。如果需要修改网址或端口，篡改猴脚本也需要相应修改。
 
 主要代码位于`src/main.ts`中，你可以在这里进行开发。
