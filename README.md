@@ -26,10 +26,7 @@
 要求：
 - Node.js 版本：20.0.0+
 - 浏览器插件：[篡改猴](https://www.tampermonkey.net)
-- 篡改猴脚本：[githubCodeTesting.user.js](https://xyy-huijiwiki.github.io/MediaWiki-Common.js/githubCodeTesting.user.js)
-
-> [!NOTE]
-> 篡改猴脚本位于`public/githubCodeTesting.user.js`中，用于阻止默认js加载，并加载测试代码。结束测试后记得关闭或删除，否则默认js将无法加载。
+- 篡改猴脚本：[Dev-Toggle-for-GitHub-Code](https://github.com/XYY-huijiwiki/Dev-Toggle-for-GitHub-Code)
 
 克隆仓库到本地，然后使用 `npm` 安装依赖。
 
