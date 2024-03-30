@@ -1,11 +1,11 @@
-# MediaWiki:Common.js 和 MediaWiki:Common.css
+# MediaWiki:Common.js
 
-这里是羊羊百科的 js 和 css 仓库。羊羊百科的(MediaWiki:Common.js)[https://xyy-huijiwiki/wiki/MediaWiki:Common.js]会自动读取本仓库的 js 文件。除此之外，(MediaWiki:Common.css)[https://xyy-huijiwiki/wiki/MediaWiki:Common.css]也合并到此处，将会通过 js 文件动态加载。
+这里是羊羊百科的 js 仓库。羊羊百科的(MediaWiki:Common.js)[https://xyy-huijiwiki/wiki/MediaWiki:Common.js]会自动读取本仓库的 js 文件。
 
 ## faq
 
-1. 为什么不直接在 MediaWiki:Common.js 和 MediaWiki:Common.css 中写代码？
-   - Mediawiki 对于 js 和 css 代码的支持并不是很好，且很多更加简洁的现代语法不能使用。除此之外，Mediawiki不会对 js 和 css 进行压缩，会导致加载速度变慢。
+1. 为什么不直接在 MediaWiki:Common.js 中写代码？
+   - Mediawiki 对于 js 代码的支持并不是很好，很多更加简洁的现代语法不能使用。
 2. 为什么使用 ts？我只会 js 怎么办？
    - ts 的语法更加严格，可以减少一些错误。如果你只会 js，可以直接写 js 代码，并在你确定无误但是提示错误的代码上加上 `// @ts-ignore`。比如：
      ```ts
@@ -38,4 +38,4 @@ import(`http://localhost:5173/src/main.ts`);
 
 很遗憾，目前代码无法自动加载，每次刷新页面或打开新页面都需要重新输入上述代码。
 
-`src/Common.ts`文件和`src/Common.css`相当于`MediaWiki:Common.js`和`MediaWiki:Common.css`，你可以在这里写你的代码。
+主要代码位于`src/main.ts`中，你可以在这里进行开发。
