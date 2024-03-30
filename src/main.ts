@@ -11,7 +11,7 @@ $("#mw-content-text").attr("lang", "zh-CN");
 /* 如果列表的开头是一个图标，将其视为图标列表，加一个class */
 $("li:has(span.material-symbols-outlined)").each(function (
   _index: number,
-  element: HTMLLIElement
+  element: HTMLLIElement,
 ) {
   if (
     $(element).html().slice(0, 39) === '<span class="material-symbols-outlined"'
@@ -26,7 +26,7 @@ $("li:has(span.material-symbols-outlined)").each(function (
   await CHP;
   // search for fileicon.png
   let elements = $(
-    'ul.gallery li.gallerybox div.thumb a[href$=".png"]>img[src="/resources/assets/file-type-icons/fileicon.png"]'
+    'ul.gallery li.gallerybox div.thumb a[href$=".png"]>img[src="/resources/assets/file-type-icons/fileicon.png"]',
   );
   // log the result in dev mode
   if (import.meta.env.DEV) console.log(elements);
@@ -35,7 +35,7 @@ $("li:has(span.material-symbols-outlined)").each(function (
     const element = elements[index];
     // get the file name, and know the file type
     let fileName = decodeURI($(element).parent().attr("href")).match(
-      /:(.*)\.png/
+      /:(.*)\.png/,
     )![1];
     let fileExt = fileName.split(".").pop();
     let isVideo = ["mp4"].includes(fileExt!);
@@ -49,10 +49,10 @@ $("li:has(span.material-symbols-outlined)").each(function (
     let icon_name = isVideo
       ? "videocam"
       : isAudio
-      ? "music_note"
-      : isModel
-      ? "view_in_ar"
-      : "note";
+        ? "music_note"
+        : isModel
+          ? "view_in_ar"
+          : "note";
     $(element).parent().attr("style", "position: relative;");
     $(element)
       .parent()
@@ -61,7 +61,7 @@ $("li:has(span.material-symbols-outlined)").each(function (
               <span class="material-symbols-outlined" style="vertical-align: sub; font-size: 2em;">
                 ${icon_name} 
               </span>
-            </div>`
+            </div>`,
       );
   }
 })();
