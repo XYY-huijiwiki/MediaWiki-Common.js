@@ -16,7 +16,20 @@
 
 ## 开发
 
-要求：Node.js 20+
+### 简单版本
+直接编辑[main.ts](src/main.ts)即可。保存后自动通过[GitHub Actions](https://github.com/XYY-huijiwiki/MediaWiki-Common.js/actions)进行语法检查等操作。如果通过了检查，你的代码会自动部署到羊羊百科。
+
+为了防止恶意修改，你可能无法直接保存，但是可以根据提示提交一个 pull request。羊羊百科的管理员会定期处理这些 pull request。
+
+### 复杂版本
+
+要求：
+- Node.js 版本：20.0.0+
+- 浏览器插件：[篡改猴](https://www.tampermonkey.net)
+- 篡改猴脚本：[githubCodeTesting.user.js](https://xyy-huijiwiki.github.io/MediaWiki-Common.js/githubCodeTesting.user.js)
+
+> [!NOTE]
+> 篡改猴脚本位于`public/githubCodeTesting.user.js`中，用于阻止默认js加载，并加载测试代码。结束测试后记得关闭或删除，否则默认js将无法加载。
 
 克隆仓库到本地，然后使用 `npm` 安装依赖。
 
@@ -35,7 +48,5 @@ npm run dev
 ```js
 import(`http://localhost:5173/src/main.ts`);
 ```
-
-很遗憾，目前代码无法自动加载，每次刷新页面或打开新页面都需要重新输入上述代码。
 
 主要代码位于`src/main.ts`中，你可以在这里进行开发。
