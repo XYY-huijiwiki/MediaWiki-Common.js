@@ -1,6 +1,6 @@
 # MediaWiki:Common.js
 
-这里是羊羊百科的 js 仓库。羊羊百科的[MediaWiki:Common.js](https://xyy-huijiwiki/wiki/MediaWiki:Common.js)会自动读取本仓库的 js 文件。
+这里是羊羊百科的 js 仓库。羊羊百科的[MediaWiki:Common.js](https://xyy.huijiwiki.com/wiki/MediaWiki:Common.js)会自动读取本仓库的 js 文件。
 
 ## faq
 

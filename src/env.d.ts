@@ -1,6 +1,7 @@
 /// <reference types="vite/client" />
 
-declare const $: any;
-declare const mw: any;
-declare const CHP: Promise<any>;
-declare const dev: string | false;
+declare var tailwindconfig: any;
+declare var mw: any;
+declare var CHP: Promise<any>;
+declare var dev: string | false;
+declare var $: any;
