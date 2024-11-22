@@ -11,7 +11,12 @@ let gh_page_baseURL = "https://github.com/XYY-huijiwiki/files/releases/tag/";
 // </a>
 // </div>
 // <div class="gallerytext">...</div>
-function createMediaElement(file_name: string, desc: string, height?: number) {
+function createMediaElement(
+  file_name: string,
+  desc: string = "",
+  width: string = "auto",
+  height: string = "auto"
+) {
   let file_ext = file_name.split(".").pop() || "";
   let file_type: "image" | "video" | "audio" | "other" = (() => {
     if (["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(file_ext)) {
@@ -40,14 +45,15 @@ function createMediaElement(file_name: string, desc: string, height?: number) {
     mediaImg.src = gh_proxy + gh_media_baseURL + file_name + "/thumb.webp";
     mediaImg.decoding = "async";
     mediaImg.loading = "lazy";
-    mediaImg.style.width = "auto";
-    mediaImg.style.height = height ? height.toString() + "px" : "auto";
+    mediaImg.style.width = width;
+    mediaImg.style.height = height;
     mediaElement = mediaImg;
   } else if (file_type === "video") {
     let mediaVideo = document.createElement("video");
     mediaVideo.controls = true;
-    mediaVideo.style.width = "auto";
-    mediaVideo.style.height = height ? height.toString() + "px" : "auto";
+    mediaVideo.style.width = width;
+    mediaVideo.style.height = height;
+    mediaVideo.style.borderRadius = "4px";
     mediaVideo.src =
       gh_proxy + gh_media_baseURL + file_name + "/default." + file_ext;
     mediaVideo.poster = gh_proxy + gh_media_baseURL + file_name + "/thumb.webp";
@@ -66,10 +72,12 @@ function createMediaElement(file_name: string, desc: string, height?: number) {
   }
   mediaLink.appendChild(mediaElement);
   mediaDiv.appendChild(mediaLink);
-  let textDiv = document.createElement("div");
-  textDiv.className = "gallerytext";
-  textDiv.textContent = desc;
-  mediaDiv.appendChild(textDiv);
+  if (desc) {
+    let textDiv = document.createElement("div");
+    textDiv.className = "gallerytext";
+    textDiv.textContent = desc;
+    mediaDiv.appendChild(textDiv);
+  }
   return mediaDiv;
 }
 
@@ -90,12 +98,11 @@ function checkAndModifyThumbs() {
       let desc =
         pipe_index === -1 ? "" : orign_text.slice(pipe_index + 1).trim();
       let thumb_style = thumb.getAttribute("style");
-      let thumb_height = parseInt(
-        thumb_style?.match(/height:\s*(\d+)px/)?.[1] || "0"
-      );
+      let thumb_height = thumb_style?.match(/height:\s*(\d+px)/)?.[1];
       thumb.innerHTML = createMediaElement(
         file_name,
         desc,
+        undefined,
         thumb_height
       ).outerHTML;
       // remove thumb's parent and grand parent element's style.width
@@ -103,6 +110,30 @@ function checkAndModifyThumbs() {
       let thumb_grandparent = thumb_parent?.parentElement;
       thumb_parent?.style.removeProperty("width");
       thumb_grandparent?.style.removeProperty("width");
+    }
+  });
+  const redlinks = document.querySelectorAll("a.new");
+  redlinks.forEach((redlink) => {
+    let link = redlink.getAttribute("href") || "";
+    // parse params of link
+    let url = new URL(link, window.location.href);
+    // let title = url.searchParams.get("title") || "";
+    let title = redlink.getAttribute("title") || "";
+    let action = url.searchParams.get("action") || "";
+    if (action === "" && title.startsWith("文件:GitHub:")) {
+      let file_name = title.slice(10).trim().replaceAll(" ", "_");
+      let redlink_parent = redlink.parentElement;
+      let [thumb_width, thumb_height] =
+        redlink_parent?.className === "thumbinner"
+          ? ["auto", "200px"]
+          : ["100%", "auto"];
+      redlink_parent?.style.removeProperty("width");
+      redlink.outerHTML = createMediaElement(
+        file_name,
+        undefined,
+        thumb_width,
+        thumb_height
+      ).outerHTML;
     }
   });
 }
