@@ -37,8 +37,7 @@ function createMediaElement(file_name: string, desc: string, height?: number) {
   if (file_type === "image") {
     let mediaImg = document.createElement("img");
     mediaImg.alt = file_name;
-    mediaImg.src =
-      gh_proxy + gh_media_baseURL + file_name + "/default." + file_ext;
+    mediaImg.src = gh_proxy + gh_media_baseURL + file_name + "/thumb.webp";
     mediaImg.decoding = "async";
     mediaImg.loading = "lazy";
     mediaImg.style.width = "auto";
@@ -51,6 +50,8 @@ function createMediaElement(file_name: string, desc: string, height?: number) {
     mediaVideo.style.height = height ? height.toString() + "px" : "auto";
     mediaVideo.src =
       gh_proxy + gh_media_baseURL + file_name + "/default." + file_ext;
+    mediaVideo.poster = gh_proxy + gh_media_baseURL + file_name + "/thumb.webp";
+    mediaVideo.preload = "metadata";
     mediaElement = mediaVideo;
   } else if (file_type === "audio") {
     let mediaAudio = document.createElement("audio");
