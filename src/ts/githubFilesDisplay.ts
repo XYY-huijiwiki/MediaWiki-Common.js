@@ -1,5 +1,6 @@
 // quick config
 let gh_proxy = "https://ghproxy.net/";
+let thumb_proxy = "https://ik.imagekit.io/gwa1ycz7gc/";
 let gh_media_baseURL =
   "https://github.com/XYY-huijiwiki/files/releases/download/";
 let gh_page_baseURL = "https://github.com/XYY-huijiwiki/files/releases/tag/";
@@ -21,7 +22,7 @@ function createMediaElement(
   let file_type: "image" | "video" | "audio" | "other" = (() => {
     if (["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(file_ext)) {
       return "image";
-    } else if (["mp4", "webm", "ogg"].includes(file_ext)) {
+    } else if (["mp4", "webm"].includes(file_ext)) {
       return "video";
     } else if (["mp3", "wav", "ogg"].includes(file_ext)) {
       return "audio";
@@ -42,7 +43,7 @@ function createMediaElement(
   if (file_type === "image") {
     let mediaImg = document.createElement("img");
     mediaImg.alt = file_name;
-    mediaImg.src = gh_proxy + gh_media_baseURL + file_name + "/thumb.webp";
+    mediaImg.src = thumb_proxy + gh_media_baseURL + file_name + "/thumb.webp";
     mediaImg.decoding = "async";
     mediaImg.loading = "lazy";
     mediaImg.style.width = width;
@@ -56,7 +57,8 @@ function createMediaElement(
     mediaVideo.style.borderRadius = "4px";
     mediaVideo.src =
       gh_proxy + gh_media_baseURL + file_name + "/default." + file_ext;
-    mediaVideo.poster = gh_proxy + gh_media_baseURL + file_name + "/thumb.webp";
+    mediaVideo.poster =
+      thumb_proxy + gh_media_baseURL + file_name + "/thumb.webp";
     mediaVideo.preload = "metadata";
     mediaElement = mediaVideo;
   } else if (file_type === "audio") {
@@ -143,9 +145,6 @@ checkAndModifyThumbs();
 
 // Create a MutationObserver instance
 const observer = new MutationObserver((mutationsList) => {
-  // Start timing
-  const start = performance.now();
-
   // Check each mutation
   mutationsList.forEach((mutation) => {
     if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
@@ -157,11 +156,6 @@ const observer = new MutationObserver((mutationsList) => {
       });
     }
   });
-
-  // End timing
-  const end = performance.now();
-  dev &&
-    console.log(`Execution time for githubFilesDisplay.ts: ${end - start} ms`);
 });
 
 // Start observing the container for added nodes
