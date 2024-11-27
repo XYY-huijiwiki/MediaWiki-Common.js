@@ -19,9 +19,13 @@
   },
   "devDependencies": {
     "@types/jquery": "^3.5.29",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.7.1",
     "prettier": "^3.2.5",
     "typescript": "^5.0.2",
     "vite": "^5.2.7"
+  },
+  "dependencies": {
+    "lodash-es": "^4.17.21"
   }
 }

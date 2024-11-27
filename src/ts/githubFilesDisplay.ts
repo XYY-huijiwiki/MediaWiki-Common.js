@@ -1,3 +1,5 @@
+import { debounce } from "lodash-es";
+
 // quick config
 let gh_proxy = "https://ghproxy.net/";
 let thumb_proxy = "https://ik.imagekit.io/gwa1ycz7gc/";
@@ -5,16 +7,14 @@ let gh_media_baseURL =
   "https://github.com/XYY-huijiwiki/files/releases/download/";
 let gh_page_baseURL = "https://github.com/XYY-huijiwiki/files/releases/tag/";
 
-// basic html media structure
-// <div style="margin:0px auto;">
-// <a href="...">
-// <img alt="..." src="..." loading="lazy" decoding="async"> or <video> or <audio> or <iframe>
-// </a>
-// </div>
-// <div class="gallerytext">...</div>
+// create a media element like:
+// <a href="..."><img alt="..." src="..." loading="lazy" title="..."></a>
+// or
+// <a href="..."><video controls src="..." poster="..." preload="metadata" title="..."></a>
+// or
+// <a href="..."><audio controls src="..." title="..."></a>
 function createMediaElement(
   file_name: string,
-  desc: string = "",
   width: string = "auto",
   height: string = "auto"
 ) {
@@ -30,11 +30,10 @@ function createMediaElement(
       return "other";
     }
   })();
-  let mediaDiv = document.createElement("div");
-  mediaDiv.style.margin = "0px auto";
-  let mediaLink = document.createElement("a");
-  mediaLink.href = gh_page_baseURL + file_name;
-  mediaLink.target = "_blank";
+  let a = document.createElement("a");
+  a.href = gh_page_baseURL + file_name;
+  a.title = file_name;
+  a.target = "_blank";
   let mediaElement:
     | HTMLImageElement
     | HTMLVideoElement
@@ -44,7 +43,6 @@ function createMediaElement(
     let mediaImg = document.createElement("img");
     mediaImg.alt = file_name;
     mediaImg.src = thumb_proxy + gh_media_baseURL + file_name + "/thumb.webp";
-    mediaImg.decoding = "async";
     mediaImg.loading = "lazy";
     mediaImg.style.width = width;
     mediaImg.style.height = height;
@@ -72,76 +70,114 @@ function createMediaElement(
     mediaSpan.textContent = "Unsupported file type: " + file_ext;
     mediaElement = mediaSpan;
   }
-  mediaLink.appendChild(mediaElement);
-  mediaDiv.appendChild(mediaLink);
-  if (desc) {
-    let textDiv = document.createElement("div");
-    textDiv.className = "gallerytext";
-    textDiv.textContent = desc;
-    mediaDiv.appendChild(textDiv);
-  }
-  return mediaDiv;
+  a.appendChild(mediaElement);
+  return a;
 }
 
-function checkAndModifyThumbs() {
-  const thumbs = document.querySelectorAll("div.thumb:not(:has(img))");
-  thumbs.forEach((thumb) => {
-    let orign_text = thumb.textContent?.trim() || "";
-    if (orign_text.startsWith("GitHub:")) {
-      // possible text structure:
-      // GitHub: file_name | description
-      // or
-      // GitHub: file_name
-      let pipe_index = orign_text.indexOf("|");
-      let file_name =
-        pipe_index === -1
-          ? orign_text.slice(7).trim().replaceAll(" ", "_")
-          : orign_text.slice(7, pipe_index).trim().replaceAll(" ", "_");
-      let desc =
-        pipe_index === -1 ? "" : orign_text.slice(pipe_index + 1).trim();
-      let thumb_style = thumb.getAttribute("style");
-      let thumb_height = thumb_style?.match(/height:\s*(\d+px)/)?.[1];
-      thumb.innerHTML = createMediaElement(
-        file_name,
-        desc,
-        undefined,
-        thumb_height
-      ).outerHTML;
-      // remove thumb's parent and grand parent element's style.width
-      let thumb_parent = thumb.parentElement;
-      let thumb_grandparent = thumb_parent?.parentElement;
-      thumb_parent?.style.removeProperty("width");
-      thumb_grandparent?.style.removeProperty("width");
-    }
+function checkAndModifyGithubFiles() {
+  // [[:文件:GitHub:file_name]]
+  // => <a href="/index.php?title=文件:GitHub:file_name&action=edit" class="new">...</a>
+  // => <a href="gh_page_baseURL + file_name" target="_blank" title="file_name">...</a>
+  let linkElements = document.querySelectorAll(
+    `a.new[href^="/index.php?title=${encodeURI("文件:GitHub:")}"]`
+  ) as NodeListOf<HTMLAnchorElement>;
+  linkElements.forEach((linkElement) => {
+    let url = new URL(linkElement.href, window.location.origin);
+    let file_name =
+      url.searchParams.get("title")?.slice(10).trim().replaceAll(" ", "_") ||
+      "";
+    linkElement.href = gh_page_baseURL + file_name;
+    linkElement.target = "_blank";
+    linkElement.title = file_name;
+    linkElement.classList.remove("new");
   });
-  const redlinks = document.querySelectorAll("a.new");
-  redlinks.forEach((redlink) => {
-    let link = redlink.getAttribute("href") || "";
-    // parse params of link
-    let url = new URL(link, window.location.href);
-    // let title = url.searchParams.get("title") || "";
-    let title = redlink.getAttribute("title") || "";
-    let action = url.searchParams.get("action") || "";
-    if (action === "" && title.startsWith("文件:GitHub:")) {
-      let file_name = title.slice(10).trim().replaceAll(" ", "_");
-      let redlink_parent = redlink.parentElement;
-      let [thumb_width, thumb_height] =
-        redlink_parent?.className === "thumbinner"
-          ? ["auto", "200px"]
-          : ["100%", "auto"];
-      redlink_parent?.style.removeProperty("width");
-      redlink.outerHTML = createMediaElement(
+
+  // [[文件:GitHub:file_name|缩略图]]
+  // => <div class="thumbinner" style="width:182px;">
+  //        <a href="/index.php?title=特殊:上传文件&wpDestFile=GitHub:file_name" class="new">file_name</a>
+  //        <div class="thumbcaption">...</div>
+  //    </div>
+  // => <div class="thumbinner">
+  //        <a href="gh_page_baseURL + file_name" target="_blank" title="file_name">
+  //            <img alt="file_name" src="thumb_proxy + gh_media_url + file_name + /thumb.webp" loading="lazy" style="width: 300px; height: auto;">
+  //        </a>
+  //        <div class="thumbcaption">...</div>
+  //    </div>
+  let thumbElements = document.querySelectorAll(
+    `div.thumbinner:has(>a.new[href^="/index.php?title=${encodeURI("特殊:上传文件&wpDestFile=GitHub:")}"])`
+  ) as NodeListOf<HTMLDivElement>;
+  thumbElements.forEach((thumbElement) => {
+    thumbElement.style.removeProperty("width");
+    let linkElement = thumbElement.querySelector("a.new") as HTMLAnchorElement;
+    let url = new URL(linkElement.href, window.location.origin);
+    let file_name =
+      url.searchParams
+        .get("wpDestFile")
+        ?.slice(7)
+        .trim()
+        .replaceAll(" ", "_") || "";
+    thumbElement.innerHTML = createMediaElement(
+      file_name,
+      "300px",
+      "auto"
+    ).outerHTML;
+  });
+
+  // [[文件:GitHub:file_name]]
+  // => <a href="/index.php?title=特殊:上传文件&wpDestFile=GitHub:file_name" class="new">...</a>
+  // => <a href="gh_page_baseURL + file_name" target="_blank" title="file_name">
+  //        <img alt="file_name" src="thumb_proxy + gh_media_url + file_name + /thumb.webp" loading="lazy" style="width: 100%; height: auto;">
+  //    </a>
+  let imageElements = document.querySelectorAll(
+    `a.new[href^="/index.php?title=${encodeURI("特殊:上传文件&wpDestFile=GitHub:")}"]`
+  ) as NodeListOf<HTMLAnchorElement>;
+  imageElements.forEach((imageElement) => {
+    let url = new URL(imageElement.href, window.location.origin);
+    let file_name =
+      url.searchParams
+        .get("wpDestFile")
+        ?.slice(7)
+        .trim()
+        .replaceAll(" ", "_") || "";
+    imageElement.outerHTML = createMediaElement(
+      file_name,
+      "100%",
+      "auto"
+    ).outerHTML;
+  });
+
+  // <gallery>
+  // GitHub:file_name
+  // </gallery>
+  // => <div style="width: 122px"><div class="thumb" style="height: 120px;">GitHub:file_name</div></div>
+  // => <div><div class="thumb"><a><img/></a></div></div>
+  let galleryElements = document.querySelectorAll(
+    `div.thumb:not(:has(img))`
+  ) as NodeListOf<HTMLDivElement>;
+  galleryElements.forEach((galleryElement) => {
+    if (galleryElement.textContent?.startsWith("GitHub:")) {
+      let file_name = galleryElement.textContent
+        .slice(7)
+        .trim()
+        .replaceAll(" ", "_");
+      let height = galleryElement.style.height;
+      galleryElement.innerHTML = createMediaElement(
         file_name,
-        undefined,
-        thumb_width,
-        thumb_height
+        "autp",
+        height
       ).outerHTML;
+      // remover useless width and height
+      let parentElement = galleryElement.parentElement as HTMLDivElement;
+      let grandparentElement = parentElement.parentElement as HTMLDivElement;
+      parentElement.style.removeProperty("width");
+      grandparentElement.style.removeProperty("width");
+      galleryElement.style.removeProperty("height");
     }
   });
 }
 
 // Initial check on page load
-checkAndModifyThumbs();
+checkAndModifyGithubFiles();
 
 // Create a MutationObserver instance
 const observer = new MutationObserver((mutationsList) => {
@@ -149,7 +185,7 @@ const observer = new MutationObserver((mutationsList) => {
   mutationsList.forEach((mutation) => {
     if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
       observer.disconnect();
-      checkAndModifyThumbs();
+      debounce(checkAndModifyGithubFiles, 500)();
       observer.observe(document.body, {
         childList: true,
         subtree: true,
