@@ -57,7 +57,7 @@ function createMediaElement(
       gh_proxy + gh_media_baseURL + file_name + "/default." + file_ext;
     mediaVideo.poster =
       thumb_proxy + gh_media_baseURL + file_name + "/thumb.webp";
-    mediaVideo.preload = "metadata";
+    mediaVideo.preload = "none";
     mediaElement = mediaVideo;
   } else if (file_type === "audio") {
     let mediaAudio = document.createElement("audio");
