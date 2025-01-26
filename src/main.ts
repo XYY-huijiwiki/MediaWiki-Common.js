@@ -30,7 +30,7 @@ import { debounce } from "lodash-es";
           a.href = url.href;
         }
       });
-    }, 200)
+    }, 200),
   );
   observer.observe(document.body, { childList: true, subtree: true });
 

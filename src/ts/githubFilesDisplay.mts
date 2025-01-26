@@ -16,7 +16,7 @@ let gh_page_baseURL = "https://github.com/XYY-huijiwiki/files/releases/tag/";
 function createMediaElement(
   file_name: string,
   width: string = "auto",
-  height: string = "auto"
+  height: string = "auto",
 ) {
   let file_ext = file_name.split(".").pop() || "";
   let file_type: "image" | "video" | "audio" | "other" = (() => {
@@ -79,7 +79,7 @@ function checkAndModifyGithubFiles() {
   // => <a href="/index.php?title=文件:GitHub:file_name&action=edit" class="new">...</a>
   // => <a href="gh_page_baseURL + file_name" target="_blank" title="file_name">...</a>
   let linkElements = document.querySelectorAll(
-    `a.new[href^="/index.php?title=${encodeURI("文件:GitHub:")}"]`
+    `a.new[href^="/index.php?title=${encodeURI("文件:GitHub:")}"]`,
   ) as NodeListOf<HTMLAnchorElement>;
   linkElements.forEach((linkElement) => {
     let url = new URL(linkElement.href, window.location.origin);
@@ -104,7 +104,7 @@ function checkAndModifyGithubFiles() {
   //        <div class="thumbcaption">...</div>
   //    </div>
   let thumbElements = document.querySelectorAll(
-    `div.thumbinner:has(>a.new[href^="/index.php?title=${encodeURI("特殊:上传文件&wpDestFile=GitHub:")}"])`
+    `div.thumbinner:has(>a.new[href^="/index.php?title=${encodeURI("特殊:上传文件&wpDestFile=GitHub:")}"])`,
   ) as NodeListOf<HTMLDivElement>;
   thumbElements.forEach((thumbElement) => {
     thumbElement.style.removeProperty("width");
@@ -119,7 +119,7 @@ function checkAndModifyGithubFiles() {
     thumbElement.innerHTML = createMediaElement(
       file_name,
       "300px",
-      "auto"
+      "auto",
     ).outerHTML;
   });
 
@@ -129,7 +129,7 @@ function checkAndModifyGithubFiles() {
   //        <img alt="file_name" src="thumb_proxy + gh_media_url + file_name + /thumb.webp" loading="lazy" style="width: 100%; height: auto;">
   //    </a>
   let imageElements = document.querySelectorAll(
-    `a.new[href^="/index.php?title=${encodeURI("特殊:上传文件&wpDestFile=GitHub:")}"]`
+    `a.new[href^="/index.php?title=${encodeURI("特殊:上传文件&wpDestFile=GitHub:")}"]`,
   ) as NodeListOf<HTMLAnchorElement>;
   imageElements.forEach((imageElement) => {
     let url = new URL(imageElement.href, window.location.origin);
@@ -142,7 +142,7 @@ function checkAndModifyGithubFiles() {
     imageElement.outerHTML = createMediaElement(
       file_name,
       "100%",
-      "auto"
+      "auto",
     ).outerHTML;
   });
 
@@ -152,7 +152,7 @@ function checkAndModifyGithubFiles() {
   // => <div style="width: 122px"><div class="thumb" style="height: 120px;">GitHub:file_name</div></div>
   // => <div><div class="thumb"><a><img/></a></div></div>
   let galleryElements = document.querySelectorAll(
-    `div.thumb:not(:has(img))`
+    `div.thumb:not(:has(img))`,
   ) as NodeListOf<HTMLDivElement>;
   galleryElements.forEach((galleryElement) => {
     if (galleryElement.textContent?.startsWith("GitHub:")) {
@@ -164,7 +164,7 @@ function checkAndModifyGithubFiles() {
       galleryElement.innerHTML = createMediaElement(
         file_name,
         "autp",
-        height
+        height,
       ).outerHTML;
       // remover useless width and height
       let parentElement = galleryElement.parentElement as HTMLDivElement;

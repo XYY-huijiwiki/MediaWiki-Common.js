@@ -10,13 +10,13 @@ export default defineConfig({
       entry: resolve(__dirname, "src/main.ts"),
       name: "Common",
       // the proper extensions will be added
-      fileName: "common",
-      formats: ["es", "cjs", "umd", "iife"],
+      fileName: () => "common.js",
+      formats: ["umd"],
     },
   },
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
-  }
+  },
 });

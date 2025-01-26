@@ -8,9 +8,6 @@
   "files": [
     "dist"
   ],
-  "main": "dist/my-lib.cjs",
-  "module": "dist/my-lib.js",
-  "browser": "dist/my-lib.umd.js",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
