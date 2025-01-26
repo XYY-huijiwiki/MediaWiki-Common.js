@@ -20,19 +20,21 @@ import { debounce } from "lodash-es";
     return;
   }
   // if in dev mode, add `?dev-server` to all links
-  const observer = new MutationObserver(
-    debounce(() => {
-      const devServerValue = import.meta.url;
-      document.querySelectorAll("a").forEach((a) => {
-        const url = new URL(a.href);
-        if (url.origin === location.origin) {
-          url.searchParams.set("dev-server", devServerValue);
-          a.href = url.href;
-        }
-      });
-    }, 200)
-  );
-  observer.observe(document.body, { childList: true, subtree: true });
+  if (dev) {
+    const observer = new MutationObserver(
+      debounce(() => {
+        const devServerValue = import.meta.url;
+        document.querySelectorAll("a").forEach((a) => {
+          const url = new URL(a.href);
+          if (url.origin === location.origin) {
+            url.searchParams.set("dev-server", devServerValue);
+            a.href = url.href;
+          }
+        });
+      }, 200)
+    );
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
 
   // ===== prod mode =====
   await import("./ts/setIconList.mts");
