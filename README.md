@@ -35,6 +35,9 @@ npm install
 npm run dev
 ```
 
-开发服务器会运行在 `http://localhost:5173`。
+根据提示打开网页，会跳转到羊羊百科的首页，且网址末尾有类似`?dev-server=http%3A%2F%2Flocalhost%3A5173%2Fsrc%2Fentry.ts%3Ft%3D1737883108907`的Param，这个Param表示正在使用开发服务器。
 
-主要代码位于`src/main.ts`中，你可以在这里进行开发。
+> [!NOTE]
+>
+> - 如果跳转页面后Param消失，需要手动添加到网址中。
+> - 理论上修改文件后，网页内容会自动更新，但实际上还是得手动刷新页面。
