@@ -38,7 +38,9 @@ let contentPrefix = mustache.render(
     gh_repository,
   }
 );
-let content = fs.readFileSync("dist/common.js", "utf-8");
+let code = fs.readFileSync("dist/common.js", "utf-8").trim();
+let codeEscaped = JSON.stringify(code).slice(1, -1);
+let content = `eval("${codeEscaped}")`;
 await page.waitForNavigation();
 await page.evaluate(
   async (gh_repository, gh_actor, gh_sha, contentPrefix, content) => {

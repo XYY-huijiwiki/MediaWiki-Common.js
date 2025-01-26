@@ -25,11 +25,13 @@ import { debounce } from "lodash-es";
       debounce(() => {
         const devServerValue = import.meta.url;
         document.querySelectorAll("a").forEach((a) => {
-          const url = new URL(a.href);
-          if (url.origin === location.origin) {
-            url.searchParams.set("dev-server", devServerValue);
-            a.href = url.href;
-          }
+          try {
+            const url = new URL(a.href);
+            if (url.origin === location.origin) {
+              url.searchParams.set("dev-server", devServerValue);
+              a.href = url.href;
+            }
+          } catch (e) {}
         });
       }, 200)
     );
@@ -37,5 +39,5 @@ import { debounce } from "lodash-es";
   }
 
   // ===== prod mode =====
-  await import("./main");
+  import("./main");
 })();

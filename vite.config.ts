@@ -13,6 +13,7 @@ export default defineConfig({
       fileName: () => "common.js",
       formats: ["umd"],
     },
+    minify: "terser",
   },
   resolve: {
     alias: {
