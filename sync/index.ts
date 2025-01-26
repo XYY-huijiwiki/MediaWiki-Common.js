@@ -1,13 +1,18 @@
 import puppeteer from "puppeteer";
+import { KnownDevices } from "puppeteer";
 import fs from "fs";
 import mustache from "mustache";
 
 // open browser
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
+await page.emulate(KnownDevices["iPhone X"]);
 await page.goto(
   "https://xyy.huijiwiki.com/index.php?title=%E7%89%B9%E6%AE%8A:%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95"
 );
+await page.evaluate(() => {
+  console.log(navigator.userAgent);
+});
 
 // login
 console.log(process.env.WIKI_USERNAME, process.env.WIKI_PASSWORD);
