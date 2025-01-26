@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2021",
+    "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
     "lib": ["es2021", "ES2020", "DOM", "DOM.Iterable"],
