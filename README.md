@@ -16,17 +16,9 @@
 
 ## 开发
 
-### 简单版本
-直接在网页上编辑[main.ts](src/main.ts)即可。保存后自动通过[GitHub Actions](https://github.com/XYY-huijiwiki/MediaWiki-Common.js/actions)进行语法检查等操作。如果通过了检查，你的代码会自动部署到羊羊百科。
-
-为了防止恶意修改，你可能无法直接保存，但是可以根据提示提交一个 pull request。羊羊百科的管理员会定期处理这些 pull request。
-
-### 复杂版本
-
 要求：
+
 - Node.js 版本：20.0.0+
-- 浏览器插件：[篡改猴](https://www.tampermonkey.net)
-- 篡改猴脚本：[Dev-Toggle-for-GitHub-Code](https://github.com/XYY-huijiwiki/Dev-Toggle-for-GitHub-Code)
 
 > [!NOTE]
 > 结束测试后记得关闭篡改猴脚本，否则默认js将无法加载。

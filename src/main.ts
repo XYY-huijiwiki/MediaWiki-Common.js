@@ -22,7 +22,7 @@ import { debounce } from "lodash-es";
   // if in dev mode, add `?dev-server` to all links
   const observer = new MutationObserver(
     debounce(() => {
-      const devServerValue = "YOUR_DEV_SERVER";
+      const devServerValue = import.meta.url;
       document.querySelectorAll("a").forEach((a) => {
         const url = new URL(a.href);
         if (url.origin === location.origin) {
@@ -30,7 +30,7 @@ import { debounce } from "lodash-es";
           a.href = url.href;
         }
       });
-    }, 200),
+    }, 200)
   );
   observer.observe(document.body, { childList: true, subtree: true });
 
