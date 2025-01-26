@@ -3,7 +3,7 @@
   "version": "0.1.6",
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "files": [
     "dist"
@@ -13,8 +13,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "format": "prettier --write ./src",
-    "sync": "tsc sync/index.ts --target esnext --module nodenext --moduleResolution nodenext && node sync/index.js",
-    "dev-sync": "tsc sync/index.ts --target esnext --module nodenext --moduleResolution nodenext && node --env-file=.env sync/index.js"
+    "sync": "tsc sync/index.ts --target esnext --module nodenext --moduleResolution nodenext && node --env-file=sync/.env sync/index.js"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.29",
