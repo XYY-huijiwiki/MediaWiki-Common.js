@@ -4,7 +4,7 @@ import fs from "fs";
 import mustache from "mustache";
 
 // open browser
-const browser = await puppeteer.launch();
+const browser = await puppeteer.launch({ headless: false });
 const page = await browser.newPage();
 await page.emulate(KnownDevices["iPhone X"]);
 await page.goto(
@@ -34,9 +34,7 @@ let gh_sha = process.env.GITHUB_SHA as string;
 console.log(gh_repository, gh_actor, gh_sha);
 let contentPrefix = mustache.render(
   fs.readFileSync("sync/warning.txt", "utf-8"),
-  {
-    gh_repository,
-  }
+  { gh_repository }
 );
 let code = fs.readFileSync("dist/common.js", "utf-8").trim();
 let codeEscaped = JSON.stringify(code).slice(1, -1);
