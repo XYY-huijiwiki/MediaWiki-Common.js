@@ -1,4 +1,4 @@
 import "./ts/setIconList";
 import "./ts/setLanguage";
 import "./ts/tailwindConfig";
-import "./ts/githubFilesDisplay";
+import "./ts/ghFilesDisplay";
