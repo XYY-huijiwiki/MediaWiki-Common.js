@@ -32,6 +32,7 @@ function createMediaElement(
       return "other";
     }
   })();
+
   let a = document.createElement("a");
   a.href = gh_page_baseURL + file_name;
   a.title = file_name;
@@ -44,7 +45,7 @@ function createMediaElement(
   if (file_type === "image") {
     let mediaImg = document.createElement("img");
     mediaImg.alt = file_name;
-    mediaImg.src = media_proxy + gh_media_baseURL + file_name + "/thumb.webp";
+    mediaImg.src = media_proxy + gh_media_baseURL + file_name;
     mediaImg.loading = "lazy";
     mediaImg.style.width = width;
     mediaImg.style.height = height;
@@ -55,22 +56,14 @@ function createMediaElement(
     mediaVideo.style.width = width;
     mediaVideo.style.height = height;
     mediaVideo.style.borderRadius = "4px";
-    mediaVideo.src =
-      media_proxy + gh_media_baseURL + file_name + "/default." + file_ext;
-    mediaVideo.poster =
-      media_proxy +
-      gh_media_baseURL +
-      file_name +
-      "/default." +
-      file_ext +
-      "/ik-thumbnail.jpg";
+    mediaVideo.src = `${media_proxy}${gh_media_baseURL}${file_name}/default.${file_ext}/ik-video.mp4`;
+    mediaVideo.poster = `${media_proxy}${gh_media_baseURL}${file_name}/default.${file_ext}/ik-video.mp4/ik-thumbnail.jpg`;
     mediaVideo.preload = "none";
     mediaElement = mediaVideo;
   } else if (file_type === "audio") {
     let mediaAudio = document.createElement("audio");
     mediaAudio.controls = true;
-    mediaAudio.src =
-      media_proxy + gh_media_baseURL + file_name + "/default." + file_ext;
+    mediaAudio.src = `${media_proxy}${gh_media_baseURL}${file_name}/default.${file_ext}`;
     mediaElement = mediaAudio;
   } else {
     let mediaSpan = document.createElement("span");
@@ -106,7 +99,7 @@ function checkAndModifyGithubFiles() {
   //    </div>
   // => <div class="thumbinner">
   //        <a href="gh_page_baseURL + file_name" target="_blank" title="file_name">
-  //            <img alt="file_name" src="thumb_proxy + gh_media_url + file_name + /thumb.webp" loading="lazy" style="width: 300px; height: auto;">
+  //            <img alt="file_name" src="thumb_proxy + gh_media_url + file_name" loading="lazy" style="width: 300px; height: auto;">
   //        </a>
   //        <div class="thumbcaption">...</div>
   //    </div>
@@ -133,7 +126,7 @@ function checkAndModifyGithubFiles() {
   // [[文件:GitHub:file_name]]
   // => <a href="/index.php?title=特殊:上传文件&wpDestFile=GitHub:file_name" class="new">...</a>
   // => <a href="gh_page_baseURL + file_name" target="_blank" title="file_name">
-  //        <img alt="file_name" src="thumb_proxy + gh_media_url + file_name + /thumb.webp" loading="lazy" style="width: 100%; height: auto;">
+  //        <img alt="file_name" src="thumb_proxy + gh_media_url + file_name" loading="lazy" style="width: 100%; height: auto;">
   //    </a>
   let imageElements = document.querySelectorAll(
     `a.new[href^="/index.php?title=${encodeURI("特殊:上传文件&wpDestFile=GitHub:")}"]`
