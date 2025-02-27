@@ -24,11 +24,10 @@ function genRawFileUrl(file_name: string) {
   return `https://github.com/XYY-huijiwiki/files/releases/download/eOsizdoz/${fileNameBase62}`;
 }
 function genThumbUrl(file_name: string) {
-  const fileNameBase62 = genFileNameBase62(file_name);
-  const rawFileUrl = genRawFileUrl(fileNameBase62);
-  const fileType = getFileType(fileNameBase62);
+  const rawFileUrl = genRawFileUrl(file_name);
+  const fileType = getFileType(file_name);
   return fileType === "image"
-    ? `https://ik.imagekit.io/eelwilzma/${rawFileUrl}`
+    ? `https://karsten-zhou.gumlet.io/${rawFileUrl}`
     : fileType === "video"
       ? `https://ik.imagekit.io/eelwilzma/${rawFileUrl}/ik-video.mp4/ik-thumbnail.jpg`
       : "";
