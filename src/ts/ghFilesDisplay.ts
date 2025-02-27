@@ -92,9 +92,14 @@ function createMediaElement(
     mediaAudio.src = genRawFileUrl(file_name);
     mediaElement = mediaAudio;
   } else {
-    let mediaSpan = document.createElement("span");
-    mediaSpan.textContent = "Unsupported file type: " + file_name;
-    mediaElement = mediaSpan;
+    let mediaImg = document.createElement("img");
+    mediaImg.alt = file_name;
+    mediaImg.src =
+      "https://xyy.huijiwiki.com/resources/assets/file-type-icons/fileicon.png";
+    mediaImg.loading = "lazy";
+    mediaImg.style.width = width;
+    mediaImg.style.height = height;
+    mediaElement = mediaImg;
   }
   a.appendChild(mediaElement);
   return a;
