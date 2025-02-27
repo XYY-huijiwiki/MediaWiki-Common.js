@@ -27,7 +27,7 @@ function genThumbUrl(file_name: string) {
   const rawFileUrl = genRawFileUrl(file_name);
   const fileType = getFileType(file_name);
   return fileType === "image"
-    ? `https://karsten-zhou.gumlet.io/${rawFileUrl}`
+    ? `https://karsten-zhou.gumlet.io/${rawFileUrl}?compress=true`
     : fileType === "video"
       ? `https://ik.imagekit.io/eelwilzma/${rawFileUrl}/ik-video.mp4/ik-thumbnail.jpg`
       : "";
@@ -60,7 +60,7 @@ function createMediaElement(
 
   let a = document.createElement("a");
   // TO DO: provide a web page to display the file details
-  // a.href = gh_page_baseURL + file_name;
+  a.href = genRawFileUrl(file_name);
   a.title = file_name;
   a.target = "_blank";
   let mediaElement:
@@ -113,7 +113,7 @@ function checkAndModifyGithubFiles() {
       url.searchParams.get("title")?.slice(10).trim().replaceAll(" ", "_") ||
       "";
     // TO DO provide a web page to display the file details
-    // linkElement.href = gh_page_baseURL + file_name;
+    linkElement.href = genRawFileUrl(file_name);
     linkElement.target = "_blank";
     linkElement.title = file_name;
     linkElement.classList.remove("new");
