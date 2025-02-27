@@ -1,13 +1,50 @@
-import { debounce, sample } from "lodash-es";
+import { debounce } from "lodash-es";
+import basex from "base-x";
 
-// quick config
-let media_proxy = sample([
-  "https://ik.imagekit.io/gwa1ycz7gc/",
-  "https://ik.imagekit.io/eelwilzma/",
-]); // randomly select a proxy
-let gh_media_baseURL =
-  "https://github.com/XYY-huijiwiki/files/releases/download/";
-let gh_page_baseURL = "https://github.com/XYY-huijiwiki/files/releases/tag/";
+// ====================
+// Helper Functions
+// ====================
+function genFileNameBase62(file_name: string) {
+  const base62 = basex(
+    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  );
+  const fileExt = file_name.split(".").pop();
+  if (!fileExt) throw new Error("File name has no extension");
+  const fileName = file_name.slice(0, -(1 + fileExt.length));
+
+  // Use TextEncoder to encode the fileName to a Uint8Array
+  const encoder = new TextEncoder();
+  const encodedFileName = encoder.encode(fileName);
+
+  const fileNameBase62 = base62.encode(encodedFileName) + "." + fileExt;
+  return fileNameBase62;
+}
+function genRawFileUrl(file_name: string) {
+  const fileNameBase62 = genFileNameBase62(file_name);
+  return `https://github.com/XYY-huijiwiki/files/releases/download/eOsizdoz/${fileNameBase62}`;
+}
+function genThumbUrl(file_name: string) {
+  const fileNameBase62 = genFileNameBase62(file_name);
+  const rawFileUrl = genRawFileUrl(fileNameBase62);
+  const fileType = getFileType(fileNameBase62);
+  return fileType === "image"
+    ? `https://ik.imagekit.io/eelwilzma/${rawFileUrl}`
+    : fileType === "video"
+      ? `https://ik.imagekit.io/eelwilzma/${rawFileUrl}/ik-video.mp4/ik-thumbnail.jpg`
+      : "";
+}
+function getFileType(fileName: string): "video" | "audio" | "image" | "other" {
+  const ext = fileName.split(".").pop();
+  if (["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(ext!)) {
+    return "image";
+  } else if (["mp4", "webm"].includes(ext!)) {
+    return "video";
+  } else if (["mp3", "wav", "ogg"].includes(ext!)) {
+    return "audio";
+  } else {
+    return "other";
+  }
+}
 
 // create a media element like:
 // <a href="..."><img alt="..." src="..." loading="lazy" title="..."></a>
@@ -20,21 +57,11 @@ function createMediaElement(
   width: string = "auto",
   height: string = "auto"
 ) {
-  let file_ext = file_name.split(".").pop() || "";
-  let file_type: "image" | "video" | "audio" | "other" = (() => {
-    if (["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(file_ext)) {
-      return "image";
-    } else if (["mp4", "webm"].includes(file_ext)) {
-      return "video";
-    } else if (["mp3", "wav", "ogg"].includes(file_ext)) {
-      return "audio";
-    } else {
-      return "other";
-    }
-  })();
+  let file_type = getFileType(file_name);
 
   let a = document.createElement("a");
-  a.href = gh_page_baseURL + file_name;
+  // TO DO: provide a web page to display the file details
+  // a.href = gh_page_baseURL + file_name;
   a.title = file_name;
   a.target = "_blank";
   let mediaElement:
@@ -45,7 +72,7 @@ function createMediaElement(
   if (file_type === "image") {
     let mediaImg = document.createElement("img");
     mediaImg.alt = file_name;
-    mediaImg.src = media_proxy + gh_media_baseURL + file_name;
+    mediaImg.src = genThumbUrl(file_name);
     mediaImg.loading = "lazy";
     mediaImg.style.width = width;
     mediaImg.style.height = height;
@@ -56,18 +83,18 @@ function createMediaElement(
     mediaVideo.style.width = width;
     mediaVideo.style.height = height;
     mediaVideo.style.borderRadius = "4px";
-    mediaVideo.src = `${media_proxy}${gh_media_baseURL}${file_name}/default.${file_ext}/ik-video.mp4`;
-    mediaVideo.poster = `${media_proxy}${gh_media_baseURL}${file_name}/default.${file_ext}/ik-video.mp4/ik-thumbnail.jpg`;
+    mediaVideo.src = genRawFileUrl(file_name);
+    mediaVideo.poster = genThumbUrl(file_name);
     mediaVideo.preload = "none";
     mediaElement = mediaVideo;
   } else if (file_type === "audio") {
     let mediaAudio = document.createElement("audio");
     mediaAudio.controls = true;
-    mediaAudio.src = `${media_proxy}${gh_media_baseURL}${file_name}/default.${file_ext}`;
+    mediaAudio.src = genRawFileUrl(file_name);
     mediaElement = mediaAudio;
   } else {
     let mediaSpan = document.createElement("span");
-    mediaSpan.textContent = "Unsupported file type: " + file_ext;
+    mediaSpan.textContent = "Unsupported file type: " + file_name;
     mediaElement = mediaSpan;
   }
   a.appendChild(mediaElement);
@@ -86,7 +113,8 @@ function checkAndModifyGithubFiles() {
     let file_name =
       url.searchParams.get("title")?.slice(10).trim().replaceAll(" ", "_") ||
       "";
-    linkElement.href = gh_page_baseURL + file_name;
+    // TO DO provide a web page to display the file details
+    // linkElement.href = gh_page_baseURL + file_name;
     linkElement.target = "_blank";
     linkElement.title = file_name;
     linkElement.classList.remove("new");
