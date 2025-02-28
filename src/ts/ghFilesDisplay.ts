@@ -44,6 +44,9 @@ function getFileType(fileName: string): "video" | "audio" | "image" | "other" {
     return "other";
   }
 }
+function genFileDetailsUrl(file_name: string) {
+  return `https://xyy.huijiwiki.com/wiki/Project:迷你控制中心#/github-file/${file_name}`;
+}
 
 // create a media element like:
 // <a href="..."><img alt="..." src="..." loading="lazy" title="..."></a>
@@ -59,8 +62,7 @@ function createMediaElement(
   let file_type = getFileType(file_name);
 
   let a = document.createElement("a");
-  // TO DO: provide a web page to display the file details
-  a.href = genRawFileUrl(file_name);
+  a.href = genFileDetailsUrl(file_name);
   a.title = file_name;
   a.target = "_blank";
   let mediaElement:
@@ -118,7 +120,7 @@ function checkAndModifyGithubFiles() {
       url.searchParams.get("title")?.slice(10).trim().replaceAll(" ", "_") ||
       "";
     // TO DO provide a web page to display the file details
-    linkElement.href = genRawFileUrl(file_name);
+    linkElement.href = genFileDetailsUrl(file_name);
     linkElement.target = "_blank";
     linkElement.title = file_name;
     linkElement.classList.remove("new");

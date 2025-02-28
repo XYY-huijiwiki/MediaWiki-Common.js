@@ -2,7 +2,7 @@
 $(document).ready(function () {
   $("li:has(span.material-symbols-outlined)").each(function (
     _index: number,
-    element: HTMLLIElement
+    element: HTMLLIElement,
   ) {
     if (
       $(element).html().slice(0, 39) ===
