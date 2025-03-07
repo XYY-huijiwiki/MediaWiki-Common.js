@@ -86,7 +86,7 @@ function createMediaElement(
     mediaVideo.style.borderRadius = "4px";
     mediaVideo.src = genRawFileUrl(file_name);
     mediaVideo.poster = genThumbUrl(file_name);
-    mediaVideo.preload = "none";
+    mediaVideo.preload = "metadata";
     mediaElement = mediaVideo;
   } else if (file_type === "audio") {
     let mediaAudio = document.createElement("audio");
