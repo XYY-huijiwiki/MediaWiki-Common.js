@@ -24,13 +24,11 @@ function genRawFileUrl(file_name: string) {
   return `https://github.com/XYY-huijiwiki/files/releases/download/eOsizdoz/${fileNameBase62}`;
 }
 function genThumbUrl(file_name: string) {
-  const rawFileUrl = genRawFileUrl(file_name);
+  const fileNameBase62 = genFileNameBase62(file_name);
   const fileType = getFileType(file_name);
-  return fileType === "image"
-    ? `https://karsten-zhou.gumlet.io/${rawFileUrl}?compress=true`
-    : fileType === "video"
-      ? `https://ik.imagekit.io/eelwilzma/${rawFileUrl}/ik-video.mp4/ik-thumbnail.jpg`
-      : "";
+  return fileType === "image" || fileType === "video"
+    ? `https://karsten-zhou.gumlet.io/https://github.com/XYY-huijiwiki/files/releases/download/thumb/${fileNameBase62}`
+    : "";
 }
 function getFileType(fileName: string): "video" | "audio" | "image" | "other" {
   const ext = fileName.split(".").pop();
