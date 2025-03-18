@@ -13,8 +13,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "format": "prettier --write ./src",
-    "sync": "tsc sync/index.ts --target esnext --module nodenext --moduleResolution nodenext && node sync/index.js",
-    "sync:local": "tsc sync/index.ts --target esnext --module nodenext --moduleResolution nodenext && node --env-file=.env sync/index.js"
+    "sync": "tsc sync/index.ts --target esnext --module nodenext --moduleResolution nodenext && node sync/index.js"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.29",

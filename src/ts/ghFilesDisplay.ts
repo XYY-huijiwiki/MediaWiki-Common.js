@@ -26,11 +26,13 @@ function genRawFileUrl(file_name: string) {
 function genThumbUrl(file_name: string) {
   const fileNameBase62 = genFileNameBase62(file_name);
   const fileType = getFileType(file_name);
-  return fileType === "image" || fileType === "video"
+  return fileType === "image" || fileType === "video" || fileType === "model"
     ? `https://karsten-zhou.gumlet.io/https://github.com/XYY-huijiwiki/files/releases/download/thumb/${fileNameBase62}`
     : "";
 }
-function getFileType(fileName: string): "video" | "audio" | "image" | "other" {
+function getFileType(
+  fileName: string
+): "video" | "audio" | "image" | "model" | "other" {
   const ext = fileName.split(".").pop();
   if (["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(ext!)) {
     return "image";
@@ -38,12 +40,51 @@ function getFileType(fileName: string): "video" | "audio" | "image" | "other" {
     return "video";
   } else if (["mp3", "wav", "ogg"].includes(ext!)) {
     return "audio";
+  } else if (["glb", "gltf"].includes(ext!)) {
+    return "model";
   } else {
     return "other";
   }
 }
 function genFileDetailsUrl(file_name: string) {
   return `https://xyy.huijiwiki.com/wiki/Project:迷你控制中心#/github-file/${file_name}`;
+}
+
+// Create a model element like:
+// <a href="..." class="!relative inline-block">
+//   <img alt="..." src="..." loading="lazy" title="..." />
+//   <div
+//     class="absolute inset-0 flex items-center justify-center bg-white/10 dark:bg-black/10"
+//   >
+//     <span class="material-symbols-outlined"> view_in_ar </span>
+//   </div>
+// </a>
+function createModelElement(
+  file_name: string,
+  width: string = "auto",
+  height: string = "auto"
+) {
+  let a = document.createElement("a");
+  a.href = genFileDetailsUrl(file_name);
+  a.title = file_name;
+  a.target = "_blank";
+  a.className = "!relative inline-block";
+  let mediaImg = document.createElement("img");
+  mediaImg.alt = file_name;
+  mediaImg.src = genThumbUrl(file_name);
+  mediaImg.loading = "lazy";
+  mediaImg.style.width = width;
+  mediaImg.style.height = height;
+  a.appendChild(mediaImg);
+  let div = document.createElement("div");
+  div.className =
+    "absolute inset-0 flex items-center justify-center bg-white/10 dark:bg-black/10";
+  let span = document.createElement("span");
+  span.className = "material-symbols-outlined";
+  span.innerText = "view_in_ar";
+  div.appendChild(span);
+  a.appendChild(div);
+  return a;
 }
 
 // create a media element like:
@@ -58,6 +99,10 @@ function createMediaElement(
   height: string = "auto"
 ) {
   let file_type = getFileType(file_name);
+
+  if (file_type === "model") {
+    return createModelElement(file_name, width, height);
+  }
 
   let a = document.createElement("a");
   a.href = genFileDetailsUrl(file_name);
