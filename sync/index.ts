@@ -47,7 +47,7 @@ async function main() {
     const code = fs.readFileSync("dist/common.js", "utf-8").trim();
     const codeEscaped = JSON.stringify(code).slice(1, -1);
     const text = contentPrefix + `eval("${codeEscaped}")`;
-    const summary = `同步 GitHub 代码。编辑者为 [https://github.com/${GITHUB_ACTOR} ${GITHUB_ACTOR}]，详见 [https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA} GitHub 页面]。`;
+    const summary = `同步GitHub代码。编辑者为${GITHUB_ACTOR}，详见 https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}`;
 
     console.log("[Node.js] Executing in-browser function...");
     const result: boolean | string = await page.evaluate(

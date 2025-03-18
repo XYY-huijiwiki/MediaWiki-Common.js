@@ -54,7 +54,7 @@ function genFileDetailsUrl(file_name: string) {
 // <a href="..." class="!relative inline-block">
 //   <img alt="..." src="..." loading="lazy" title="..." />
 //   <div
-//     class="absolute inset-0 flex items-center justify-center bg-white/10 dark:bg-black/10"
+//     class="absolute inset-0 flex items-center justify-center bg-white/20 dark:bg-black/20"
 //   >
 //     <span class="material-symbols-outlined"> view_in_ar </span>
 //   </div>
@@ -78,7 +78,7 @@ function createModelElement(
   a.appendChild(mediaImg);
   let div = document.createElement("div");
   div.className =
-    "absolute inset-0 flex items-center justify-center bg-white/10 dark:bg-black/10";
+    "absolute inset-0 flex items-center justify-center bg-white/20 dark:bg-black/20";
   let span = document.createElement("span");
   span.className = "material-symbols-outlined";
   span.innerText = "view_in_ar";
