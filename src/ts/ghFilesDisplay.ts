@@ -32,16 +32,20 @@ function genThumbUrl(file_name: string) {
 }
 function getFileType(
   fileName: string
-): "video" | "audio" | "image" | "model" | "other" {
+): "video" | "audio" | "image" | "model" | "zip" | "pdf" | "other" {
   const ext = fileName.split(".").pop();
   if (["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(ext!)) {
     return "image";
   } else if (["mp4", "webm"].includes(ext!)) {
     return "video";
-  } else if (["mp3", "wav", "ogg"].includes(ext!)) {
+  } else if (["mp3", "wav", "ogg", "aac"].includes(ext!)) {
     return "audio";
   } else if (["glb", "gltf"].includes(ext!)) {
     return "model";
+  } else if (["zip", "rar", "7z"].includes(ext!)) {
+    return "zip";
+  } else if (["pdf"].includes(ext!)) {
+    return "pdf";
   } else {
     return "other";
   }
@@ -50,69 +54,28 @@ function genFileDetailsUrl(file_name: string) {
   return `https://xyy.huijiwiki.com/wiki/Project:迷你控制中心#/github-file/${file_name}`;
 }
 
-// Create a model element like:
-// <a href="..." class="!relative inline-block">
-//   <img alt="..." src="..." loading="lazy" title="..." />
-//   <div
-//     class="absolute inset-0 flex items-center justify-center bg-white/20 dark:bg-black/20"
-//   >
-//     <span class="material-symbols-outlined"> view_in_ar </span>
-//   </div>
-// </a>
-function createModelElement(
-  file_name: string,
-  width: string = "auto",
-  height: string = "auto"
-) {
-  let a = document.createElement("a");
-  a.href = genFileDetailsUrl(file_name);
-  a.title = file_name;
-  a.target = "_blank";
-  a.className = "!relative inline-block";
-  let mediaImg = document.createElement("img");
-  mediaImg.alt = file_name;
-  mediaImg.src = genThumbUrl(file_name);
-  mediaImg.loading = "lazy";
-  mediaImg.style.width = width;
-  mediaImg.style.height = height;
-  a.appendChild(mediaImg);
-  let div = document.createElement("div");
-  div.className =
-    "absolute inset-0 flex items-center justify-center bg-white/20 dark:bg-black/20";
-  let span = document.createElement("span");
-  span.className = "material-symbols-outlined";
-  span.innerText = "view_in_ar";
-  div.appendChild(span);
-  a.appendChild(div);
-  return a;
-}
-
 // create a media element like:
 // <a href="..."><img alt="..." src="..." loading="lazy" title="..."></a>
 // or
 // <a href="..."><video controls src="..." poster="..." preload="metadata" title="..."></a>
-// or
-// <a href="..."><audio controls src="..." title="..."></a>
+// or for models
+// <a href="..." class="relative inline-block">
+//   <img alt="..." src="..." loading="lazy" title="..." />
+//   <div class="absolute inset-0 flex items-center justify-center bg-white/20 dark:bg-black/20">
+//     <span class="material-symbols-outlined"> view_in_ar </span>
+//   </div>
+// </a>
 function createMediaElement(
   file_name: string,
   width: string = "auto",
   height: string = "auto"
 ) {
   let file_type = getFileType(file_name);
-
-  if (file_type === "model") {
-    return createModelElement(file_name, width, height);
-  }
-
   let a = document.createElement("a");
   a.href = genFileDetailsUrl(file_name);
   a.title = file_name;
   a.target = "_blank";
-  let mediaElement:
-    | HTMLImageElement
-    | HTMLVideoElement
-    | HTMLAudioElement
-    | HTMLSpanElement;
+  let mediaElement: HTMLImageElement | HTMLVideoElement | HTMLSpanElement;
   if (file_type === "image") {
     let mediaImg = document.createElement("img");
     mediaImg.alt = file_name;
@@ -131,16 +94,34 @@ function createMediaElement(
     mediaVideo.poster = genThumbUrl(file_name);
     mediaVideo.preload = "metadata";
     mediaElement = mediaVideo;
-  } else if (file_type === "audio") {
-    let mediaAudio = document.createElement("audio");
-    mediaAudio.controls = true;
-    mediaAudio.src = genRawFileUrl(file_name);
-    mediaElement = mediaAudio;
+  } else if (file_type === "model") {
+    a.className = "relative inline-block";
+    let mediaImg = document.createElement("img");
+    mediaImg.alt = file_name;
+    mediaImg.src = genThumbUrl(file_name);
+    mediaImg.loading = "lazy";
+    mediaImg.style.width = width;
+    mediaImg.style.height = height;
+    mediaElement = mediaImg;
+    let div = document.createElement("div");
+    div.className =
+      "absolute inset-0 flex items-center justify-center bg-white/20 dark:bg-black/20";
+    let span = document.createElement("span");
+    span.className = "material-symbols-outlined";
+    span.innerText = "view_in_ar";
+    div.appendChild(span);
+    a.appendChild(div);
   } else {
     let mediaImg = document.createElement("img");
     mediaImg.alt = file_name;
     mediaImg.src =
-      "https://xyy.huijiwiki.com/resources/assets/file-type-icons/fileicon.png";
+      file_type === "audio"
+        ? "https://huiji-public.huijistatic.com/xyy/uploads/d/d1/File-type-audio.png"
+        : file_type === "zip"
+          ? "https://huiji-public.huijistatic.com/xyy/uploads/e/ec/File-type-zip.png"
+          : file_type === "pdf"
+            ? "https://huiji-public.huijistatic.com/xyy/uploads/4/43/File-type-doc.png"
+            : "https://huiji-public.huijistatic.com/xyy/uploads/6/6d/File-type-default.png";
     mediaImg.loading = "lazy";
     mediaImg.style.width = width;
     mediaImg.style.height = height;
@@ -153,7 +134,7 @@ function createMediaElement(
 function checkAndModifyGithubFiles() {
   // [[:文件:GitHub:file_name]]
   // => <a href="/index.php?title=文件:GitHub:file_name&action=edit" class="new">...</a>
-  // => <a href="gh_page_baseURL + file_name" target="_blank" title="file_name">...</a>
+  // => <a href="..." target="_blank" title="file_name">...</a>
   let linkElements = document.querySelectorAll(
     `a.new[href^="/index.php?title=${encodeURI("文件:GitHub:")}"]`
   ) as NodeListOf<HTMLAnchorElement>;
@@ -175,8 +156,8 @@ function checkAndModifyGithubFiles() {
   //        <div class="thumbcaption">...</div>
   //    </div>
   // => <div class="thumbinner">
-  //        <a href="gh_page_baseURL + file_name" target="_blank" title="file_name">
-  //            <img alt="file_name" src="thumb_proxy + gh_media_url + file_name" loading="lazy" style="width: 300px; height: auto;">
+  //        <a href="..." target="_blank" title="...">
+  //            <img alt="..." src="..." loading="lazy" style="width: 300px; height: auto;">
   //        </a>
   //        <div class="thumbcaption">...</div>
   //    </div>
@@ -202,8 +183,8 @@ function checkAndModifyGithubFiles() {
 
   // [[文件:GitHub:file_name]]
   // => <a href="/index.php?title=特殊:上传文件&wpDestFile=GitHub:file_name" class="new">...</a>
-  // => <a href="gh_page_baseURL + file_name" target="_blank" title="file_name">
-  //        <img alt="file_name" src="thumb_proxy + gh_media_url + file_name" loading="lazy" style="width: 100%; height: auto;">
+  // => <a href="..." target="_blank" title="...">
+  //        <img alt="..." src="..." loading="lazy" style="width: 100%; height: auto;">
   //    </a>
   let imageElements = document.querySelectorAll(
     `a.new[href^="/index.php?title=${encodeURI("特殊:上传文件&wpDestFile=GitHub:")}"]`
