@@ -16,3 +16,5 @@ typeof window.tailwind === "undefined"
     (window.tailwindconfig = config)
   : // 如果window.tailwind存在，就直接修改它
     (window.tailwind.config = config);
+
+export {};

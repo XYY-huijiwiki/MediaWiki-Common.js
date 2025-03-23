@@ -6,7 +6,7 @@ import basex from "base-x";
 // ====================
 function genFileNameBase62(file_name: string) {
   const base62 = basex(
-    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
   );
   const fileExt = file_name.split(".").pop();
   if (!fileExt) throw new Error("File name has no extension");
@@ -31,7 +31,7 @@ function genThumbUrl(file_name: string) {
     : "";
 }
 function getFileType(
-  fileName: string
+  fileName: string,
 ): "video" | "audio" | "image" | "model" | "zip" | "pdf" | "other" {
   const ext = fileName.split(".").pop();
   if (["jpg", "jpeg", "png", "gif", "svg", "webp"].includes(ext!)) {
@@ -68,7 +68,7 @@ function genFileDetailsUrl(file_name: string) {
 function createMediaElement(
   file_name: string,
   width: string = "auto",
-  height: string = "auto"
+  height: string = "auto",
 ) {
   let file_type = getFileType(file_name);
   let a = document.createElement("a");
@@ -136,7 +136,7 @@ function checkAndModifyGithubFiles() {
   // => <a href="/index.php?title=文件:GitHub:file_name&action=edit" class="new">...</a>
   // => <a href="..." target="_blank" title="file_name">...</a>
   let linkElements = document.querySelectorAll(
-    `a.new[href^="/index.php?title=${encodeURI("文件:GitHub:")}"]`
+    `a.new[href^="/index.php?title=${encodeURI("文件:GitHub:")}"]`,
   ) as NodeListOf<HTMLAnchorElement>;
   linkElements.forEach((linkElement) => {
     let url = new URL(linkElement.href, window.location.origin);
@@ -162,7 +162,7 @@ function checkAndModifyGithubFiles() {
   //        <div class="thumbcaption">...</div>
   //    </div>
   let thumbElements = document.querySelectorAll(
-    `div.thumbinner:has(>a.new[href^="/index.php?title=${encodeURI("特殊:上传文件&wpDestFile=GitHub:")}"])`
+    `div.thumbinner:has(>a.new[href^="/index.php?title=${encodeURI("特殊:上传文件&wpDestFile=GitHub:")}"])`,
   ) as NodeListOf<HTMLDivElement>;
   thumbElements.forEach((thumbElement) => {
     thumbElement.style.removeProperty("width");
@@ -177,7 +177,7 @@ function checkAndModifyGithubFiles() {
     thumbElement.innerHTML = createMediaElement(
       file_name,
       "300px",
-      "auto"
+      "auto",
     ).outerHTML;
   });
 
@@ -187,7 +187,7 @@ function checkAndModifyGithubFiles() {
   //        <img alt="..." src="..." loading="lazy" style="width: 100%; height: auto;">
   //    </a>
   let imageElements = document.querySelectorAll(
-    `a.new[href^="/index.php?title=${encodeURI("特殊:上传文件&wpDestFile=GitHub:")}"]`
+    `a.new[href^="/index.php?title=${encodeURI("特殊:上传文件&wpDestFile=GitHub:")}"]`,
   ) as NodeListOf<HTMLAnchorElement>;
   imageElements.forEach((imageElement) => {
     let url = new URL(imageElement.href, window.location.origin);
@@ -200,7 +200,7 @@ function checkAndModifyGithubFiles() {
     imageElement.outerHTML = createMediaElement(
       file_name,
       "100%",
-      "auto"
+      "auto",
     ).outerHTML;
   });
 
@@ -210,7 +210,7 @@ function checkAndModifyGithubFiles() {
   // => <div style="width: 122px"><div class="thumb" style="height: 120px;">GitHub:file_name</div></div>
   // => <div><div class="thumb"><a><img/></a></div></div>
   let galleryElements = document.querySelectorAll(
-    `div.thumb:not(:has(img))`
+    `div.thumb:not(:has(img))`,
   ) as NodeListOf<HTMLDivElement>;
   galleryElements.forEach((galleryElement) => {
     if (galleryElement.textContent?.startsWith("GitHub:")) {
@@ -222,7 +222,7 @@ function checkAndModifyGithubFiles() {
       galleryElement.innerHTML = createMediaElement(
         file_name,
         "autp",
-        height
+        height,
       ).outerHTML;
       // remover useless width and height
       let parentElement = galleryElement.parentElement as HTMLDivElement;
@@ -257,3 +257,5 @@ observer.observe(document.body, {
   childList: true,
   subtree: true,
 });
+
+export {};
