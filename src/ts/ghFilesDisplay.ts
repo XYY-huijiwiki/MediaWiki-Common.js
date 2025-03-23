@@ -51,7 +51,7 @@ function getFileType(
   }
 }
 function genFileDetailsUrl(file_name: string) {
-  return `https://xyy.huijiwiki.com/wiki/Project:迷你控制中心#/github-file/${file_name}`;
+  return `https://xyy.huijiwiki.com/wiki/Project:控制中心#/file-preview/${file_name}`;
 }
 
 // create a media element like:
