@@ -84,6 +84,7 @@ function createMediaElement(
     mediaImg.style.width = width;
     mediaImg.style.height = height;
     mediaElement = mediaImg;
+    a.appendChild(mediaElement);
   } else if (file_type === "video") {
     let mediaVideo = document.createElement("video");
     mediaVideo.controls = true;
@@ -94,6 +95,7 @@ function createMediaElement(
     mediaVideo.poster = genThumbUrl(file_name);
     mediaVideo.preload = "metadata";
     mediaElement = mediaVideo;
+    a.appendChild(mediaElement);
   } else if (file_type === "model") {
     a.className = "relative inline-block";
     let mediaImg = document.createElement("img");
@@ -110,6 +112,7 @@ function createMediaElement(
     span.className = "material-symbols-outlined";
     span.innerText = "view_in_ar";
     div.appendChild(span);
+    a.appendChild(mediaElement);
     a.appendChild(div);
   } else {
     let mediaImg = document.createElement("img");
@@ -126,8 +129,8 @@ function createMediaElement(
     mediaImg.style.width = width;
     mediaImg.style.height = height;
     mediaElement = mediaImg;
+    a.appendChild(mediaElement);
   }
-  a.appendChild(mediaElement);
   return a;
 }
 
