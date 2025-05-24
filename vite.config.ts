@@ -2,10 +2,9 @@ import { resolve } from "node:path";
 import { fileURLToPath, URL } from "node:url";
 import { defineConfig } from "vite";
 import { writeFileSync } from "node:fs";
-import { blobToBase64 } from "file64";
 
 // Get material symbols
-(async () => {
+async function fetchMaterialSymbols() {
   let rawCSS = await (
     await fetch(
       "https://fonts.googleapis.cn/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0",
@@ -22,26 +21,31 @@ import { blobToBase64 } from "file64";
   if (!fontURL) {
     throw new Error("Font URL not found");
   }
-  let fontFile = await (await fetch(fontURL)).blob();
-  let fontBase64 = await blobToBase64(fontFile);
+  let fontFileBuffer = Buffer.from(await (await fetch(fontURL)).arrayBuffer());
+  let fontBase64 = `data:font/woff2;base64,${fontFileBuffer.toString("base64")}`;
   let resultCSS = rawCSS.replace(/url\((.*?)\)/, `url(${fontBase64})`);
   writeFileSync(
     resolve(import.meta.dirname, "src/css/material-symbols.css"),
     resultCSS
   );
-})();
+}
 
-export default defineConfig({
-  build: {
-    lib: {
-      // Could also be a dictionary or array of multiple entry points
-      entry: resolve(__dirname, "src/main.ts"),
-      name: "Common",
-      // the proper extensions will be added
-      fileName: () => "common.js",
-      formats: ["umd"],
+export default defineConfig(async () => {
+  await fetchMaterialSymbols();
+  return {
+    build: {
+      lib: {
+        // Could also be a dictionary or array of multiple entry points
+        entry: resolve(__dirname, "src/main.ts"),
+        name: "Common",
+        // the proper extensions will be added
+        fileName: () => "common.js",
+        formats: ["umd"],
+      },
+      minify: "terser",
     },
-    minify: "terser",
-  },
-  resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
+    resolve: {
+      alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
+    },
+  };
 });
