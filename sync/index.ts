@@ -2,6 +2,7 @@ import puppeteer, { KnownDevices } from "puppeteer";
 import fs from "fs";
 import mustache from "mustache";
 import { env } from "process";
+import { execSync } from "child_process";
 
 // #region Main Process
 
@@ -47,7 +48,11 @@ async function main() {
     const code = fs.readFileSync("dist/common.js", "utf-8").trim();
     const codeEscaped = JSON.stringify(code).slice(1, -1);
     const text = contentPrefix + `eval("${codeEscaped}")`;
-    const summary = `同步GitHub代码。编辑者为${GITHUB_ACTOR}，详见 https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}`;
+
+    // 获取最后一次提交的 message
+    const lastCommitMsg = execSync("git log -1 --pretty=%B").toString().trim();
+
+    const summary = `${lastCommitMsg} （编辑者为${GITHUB_ACTOR}，详见 https://github.com/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}）`;
 
     console.log("[Node.js] Executing in-browser function...");
     const result: boolean | string = await page.evaluate(
