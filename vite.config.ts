@@ -7,7 +7,7 @@ import { writeFileSync } from "node:fs";
 async function fetchMaterialSymbols() {
   let rawCSS = await (
     await fetch(
-      "https://fonts.googleapis.cn/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0",
+      "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0",
       {
         // 添加现代浏览器的User-Agent，以获取体积更小的现代字体文件格式
         headers: {
@@ -33,6 +33,9 @@ async function fetchMaterialSymbols() {
 export default defineConfig(async () => {
   await fetchMaterialSymbols();
   return {
+    server: {
+      cors: true,
+    },
     build: {
       lib: {
         // Could also be a dictionary or array of multiple entry points
