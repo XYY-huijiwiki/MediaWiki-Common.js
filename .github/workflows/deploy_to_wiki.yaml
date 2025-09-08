@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Sync to Wiki
+name: Deploy to wiki
 
 on:
   # Runs on pushes targeting the default branch
@@ -9,15 +9,10 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# Allow one concurrent deployment
-concurrency:
-  group: "sync"
-  cancel-in-progress: true
-
 jobs:
   # Single deploy job since we're just deploying
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,8 +25,14 @@ jobs:
         run: npm ci
       - name: Build
         run: npm run build
-      - name: Sync new code to wiki
-        run: npm run sync
-        env:
-          WIKI_USERNAME: ${{ secrets.WIKI_USERNAME }}
-          WIKI_PASSWORD: ${{ secrets.WIKI_PASSWORD }}
+      # - name: Sync new code to wiki
+      #   run: npm run sync
+      #   env:
+      #     BOT_USERNAME: ${{ secrets.BOT_USERNAME }}
+      #     BOT_PASSWORD: ${{ secrets.BOT_PASSWORD }}
+      - uses: XYY-huijiwiki/deploy_to_wiki@main
+        with:
+          file: dist/result.txt
+          page-title: MediaWiki:Common.js
+          username: ${{ secrets.BOT_USERNAME }}
+          password: ${{ secrets.BOT_PASSWORD }}
